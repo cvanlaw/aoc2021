@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using VanLaw.AdventOfCode.CLI.Interfaces;
+
 namespace VanLaw.AdventOfCode.CLI
 {
     public class Program
@@ -31,3 +33,4 @@ namespace VanLaw.AdventOfCode.CLI
                 });
     }
 }
+

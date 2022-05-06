@@ -8,6 +8,6 @@ namespace VanLaw.AdventOfCode.CLI.Interfaces
     public interface ICommand
     {
         Task<int> ExecuteAsync(CancellationToken cancellationToken);
-        void Configure(CommandLineApplication commandLineApplication);
+        CommandLineApplication Configure(CommandLineApplication commandLineApplication);
     }
 }

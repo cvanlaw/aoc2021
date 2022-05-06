@@ -3,6 +3,8 @@ using System.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using VanLaw.AdventOfCode.CLI.Interfaces;
+
 namespace VanLaw.AdventOfCode.CLI
 {
     public static class CommandRegistration
