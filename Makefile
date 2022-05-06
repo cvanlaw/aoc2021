@@ -19,3 +19,6 @@ day_one: build
 
 day_two: build
 	dotnet run --project ${cli_proj_file} -- day-two --input-file ${current_dir}/input_files/day_two.txt
+
+day_three: build
+	dotnet run --project ${cli_proj_file} -- day-three --input-file ${current_dir}/input_files/day_three.txt
