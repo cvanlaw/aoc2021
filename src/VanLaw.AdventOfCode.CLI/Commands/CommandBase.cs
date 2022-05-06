@@ -4,8 +4,11 @@ namespace VanLaw.AdventOfCode.CLI.Commands
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
+
     using McMaster.Extensions.CommandLineUtils;
+
     using Microsoft.Extensions.Logging;
+
     using VanLaw.AdventOfCode.CLI.Interfaces;
 
     public abstract class CommandBase : ICommand
@@ -22,10 +25,10 @@ namespace VanLaw.AdventOfCode.CLI.Commands
         public abstract Task<int> ExecuteAsync(CancellationToken cancellationToken);
 
         public virtual CommandLineApplication Configure(CommandLineApplication commandLineApplication)
-        { 
+        {
             this.InputFile = commandLineApplication.Option<string>(
-                "-f|--input-file <FILE>", 
-            "Path to the file containing puzzle input.", 
+                "-f|--input-file <FILE>",
+            "Path to the file containing puzzle input.",
             CommandOptionType.SingleValue);
             this.InputFile
                 .IsRequired()
@@ -39,11 +42,11 @@ namespace VanLaw.AdventOfCode.CLI.Commands
         {
             var lines = new List<string>();
 
-            using(var stream = new FileStream(this.InputFile.ParsedValue, System.IO.FileMode.Open, System.IO.FileAccess.Read))
-            using(var reader = new StreamReader(stream))
+            using (var stream = new FileStream(this.InputFile.ParsedValue, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+            using (var reader = new StreamReader(stream))
             {
                 string line;
-                while((line = await reader.ReadLineAsync()) != null)
+                while ((line = await reader.ReadLineAsync()) != null)
                 {
                     lines.Add(line);
                 }

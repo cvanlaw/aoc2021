@@ -12,17 +12,17 @@ namespace VanLaw.AdventOfCode.CLI
     {
         public static async Task<int> Main(string[] args)
         {
-             return await CreateHostBuilder(args)
-                .RunCommandLineApplicationAsync<Program>(args, (app) =>
-                {
-                    app
-                        .GetServices<ICommand>()
-                        .ToList()
-                        .ForEach(c =>
-                        {
-                            c.Configure(app);
-                        });
-                }).ConfigureAwait(false);
+            return await CreateHostBuilder(args)
+               .RunCommandLineApplicationAsync<Program>(args, (app) =>
+               {
+                   app
+                       .GetServices<ICommand>()
+                       .ToList()
+                       .ForEach(c =>
+                       {
+                           c.Configure(app);
+                       });
+               }).ConfigureAwait(false);
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -33,4 +33,3 @@ namespace VanLaw.AdventOfCode.CLI
                 });
     }
 }
-

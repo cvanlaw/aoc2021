@@ -8,8 +8,14 @@ restore:
 build: restore
 	dotnet build --no-restore ${sln_file}
 
+format:
+	dotnet format ${sln_file}
+
 test: build
 	dotnet test --no-restore ${sln_file}
 
 day_one: build
-	dotnet run --project $(cli_proj_file) -- day-one --input-file ${current_dir}/input_files/day_one.txt
+	dotnet run --project ${cli_proj_file} -- day-one --input-file ${current_dir}/input_files/day_one.txt
+
+day_two: build
+	dotnet run --project ${cli_proj_file} -- day-two --input-file ${current_dir}/input_files/day_two.txt

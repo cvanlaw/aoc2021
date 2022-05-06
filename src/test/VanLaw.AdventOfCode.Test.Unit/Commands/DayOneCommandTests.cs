@@ -19,7 +19,7 @@ public class DayOneCommandTests
             "260",
             "263"
         };
-        
+
     [Fact]
     public void Test1()
     {
