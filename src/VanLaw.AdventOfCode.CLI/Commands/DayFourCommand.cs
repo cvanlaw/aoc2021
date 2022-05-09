@@ -23,10 +23,36 @@ namespace VanLaw.AdventOfCode.CLI.Commands
             var lines = await this.ReadAllLinesAsync();
             (var numbers, var boards) = this.ParseInput(lines);
 
-            this._logger.LogInformation($"Part One: {this.SolvePartOneAsync(numbers, boards)}");
-            this._logger.LogInformation($"Part Two: {this.SolvePartTwoAsync(lines)}");
+            var solvedBoards = boards.Select(x => this.SolveBoard(x, numbers)).Where(x => x.score.HasValue).ToList();
+
+            this._logger.LogInformation($"Part One: {this.SolvePartOneAsync(solvedBoards)}");
+            this._logger.LogInformation($"Part Two: {this.SolvePartTwoAsync(solvedBoards)}");
 
             return 0;
+        }
+
+        private (int? turnNumber, int? score) SolveBoard(int[][] board, List<int> numbers)
+        {
+            var turnNumber = 0;
+            foreach(var draw in numbers)
+            {
+                turnNumber++;
+                for (var i = 0; i < 5; i++)
+                for (var j = 0; j < 5; j++)
+                {
+                    if (board[i][j] == draw)
+                    {
+                        board[i][j] = -1;
+                    }
+                }
+
+                if (this.IsBoardAWinner(board))
+                {
+                    return (turnNumber, this.ScoreBoard(board, draw));
+                }
+            }
+
+            return (null, null);
         }
 
         private (List<int> numbers, List<int[][]> boards) ParseInput(List<string> lines)
@@ -54,35 +80,15 @@ namespace VanLaw.AdventOfCode.CLI.Commands
             return (parsedNumbers, boards);
         }
 
-        private string SolvePartOneAsync(List<int> numbers, List<int[][]> boards)
+        private string SolvePartOneAsync(List<(int? turnNumber, int? score)> solvedBoards)
         {
-            foreach (var draw in numbers)
-            {
-                foreach (var board in boards)
-                {
-                    for (var i = 0; i < 5; i++)
-                        for (var j = 0; j < 5; j++)
-                        {
-                            if (board[i][j] == draw)
-                            {
-                                board[i][j] = -1;
-                            }
-                        }
-
-                    if (this.IsBoardAWinner(board))
-                    {
-                        return this.ScoreBoard(board, draw);
-                    }
-                }
-            }
-
-            return "uh oh";
+            return solvedBoards.MinBy(x => x.turnNumber).score.ToString();
         }
 
-        private string ScoreBoard(int[][] board, int lastNumber)
+        private int ScoreBoard(int[][] board, int lastNumber)
         {
             var sum = board.ToList().SelectMany(x => x.ToList()).Where(x => x != -1).Sum();
-            return (sum * lastNumber).ToString();
+            return sum * lastNumber;
         }
 
         private bool IsBoardAWinner(int[][] board)
@@ -109,9 +115,10 @@ namespace VanLaw.AdventOfCode.CLI.Commands
             return vector.All(x => x == -1);
         }
 
-        private string SolvePartTwoAsync(List<string> lines)
+        private string SolvePartTwoAsync(List<(int? turnNumber, int? score)> solvedBoards)
         {
-            return "unsolved";
+            
+            return solvedBoards.MaxBy(x => x.turnNumber).score.ToString();
         }
 
         public override CommandLineApplication Configure(CommandLineApplication commandLineApplication)
