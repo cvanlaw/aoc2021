@@ -50,9 +50,9 @@ namespace VanLaw.AdventOfCode.CLI.Commands
 
             public Point End { get; private set; }
 
-            public bool IsValid()
+            public bool IsDiagonal()
             {
-                return this.Start.X == this.End.X || this.Start.Y == this.End.Y;
+                return this.Start.X != this.End.X && this.Start.Y != this.End.Y;
             }
 
             public List<Point> ProjectPoints()
@@ -63,18 +63,27 @@ namespace VanLaw.AdventOfCode.CLI.Commands
 
                 var isHorizontal = this.Start.X - this.End.X != 0;
 
-                if(isHorizontal)
+                if(isHorizontal && !this.IsDiagonal())
                 {
                     for(var i = 1; i < Math.Abs(this.Start.X - this.End.X); i++)
                     {
                         points.Add(new Point(Math.Min(this.Start.X, this.End.X) + i, this.Start.Y));
                     }
                 }
-                else
+                else if(!this.IsDiagonal())
                 {
                     for(var i = 1; i < Math.Abs(this.Start.Y - this.End.Y); i++)
                     {
                         points.Add(new Point(this.Start.X, Math.Min(this.Start.Y, this.End.Y) + i));
+                    }
+                }
+                else
+                {
+                    int rise = this.End.Y - this.Start.Y > 0 ? 1 : -1;
+                    int run = this.End.X - this.Start.X > 0 ? 1 : -1;
+                    for(var i = 1; i < Math.Abs(this.Start.Y - this.End.Y); i++)
+                    {
+                        points.Add(new Point(this.Start.X + (i * run), this.Start.Y + (i * rise)));
                     }
                 }
 
@@ -102,7 +111,6 @@ namespace VanLaw.AdventOfCode.CLI.Commands
         {
             return lines
                 .Select(x => this.ParseLine(x))
-                .Where(x => x.IsValid())
                 .ToList();
         }
 
@@ -121,7 +129,7 @@ namespace VanLaw.AdventOfCode.CLI.Commands
 
         private string SolvePartOneAsync(List<VentLine> ventLines)
         {
-            var allPoints = ventLines.SelectMany(line => line.ProjectPoints()).ToList();
+            var allPoints = ventLines.Where(x => !x.IsDiagonal()).SelectMany(line => line.ProjectPoints()).ToList();
             var groupedPoints = allPoints.GroupBy(
                 point => point,
                 (basePoint, points) => new
@@ -139,7 +147,18 @@ namespace VanLaw.AdventOfCode.CLI.Commands
 
         private string SolvePartTwoAsync(List<VentLine> ventLines)
         {
-            return "unsolved";
+            var allPoints = ventLines.SelectMany(line => line.ProjectPoints()).ToList();
+            var groupedPoints = allPoints.GroupBy(
+                point => point,
+                (basePoint, points) => new
+                {
+                    Key = basePoint,
+                    Count = points.Count()
+                }
+            );
+
+            var overlaps = groupedPoints.Count(gp => gp.Count >= 2);
+            return overlaps.ToString();
         }
 
         public override CommandLineApplication Configure(CommandLineApplication commandLineApplication)
