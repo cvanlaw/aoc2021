@@ -28,3 +28,6 @@ day_four: build
 
 day_five: build
 	dotnet run --project ${cli_proj_file} --no-build -- day-five --input-file ${current_dir}/input_files/day_five.txt
+
+day_six: build
+	dotnet run --project ${cli_proj_file} --no-build -- day-six --input-file ${current_dir}/input_files/day_six.txt
