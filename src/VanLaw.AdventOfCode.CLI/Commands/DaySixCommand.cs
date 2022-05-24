@@ -25,37 +25,63 @@ namespace VanLaw.AdventOfCode.CLI.Commands
                 .Select(x => int.Parse(x))
                 .ToList();
 
-            this._logger.LogInformation($"Part One: {this.SolvePartOneAsync(input)}");
-            this._logger.LogInformation($"Part Two: {this.SolvePartTwoAsync(input)}");
+            var startingPopulation = new Dictionary<int, long>
+            {
+                {0, input.Count(x => x == 0)},
+                {1, input.Count(x => x == 1)},
+                {2, input.Count(x => x == 2)},
+                {3, input.Count(x => x == 3)},
+                {4, input.Count(x => x == 4)},
+                {5, input.Count(x => x == 5)},
+                {6, input.Count(x => x == 6)},
+                {7, input.Count(x => x == 7)},
+                {8, input.Count(x => x == 8)},
+            };
+
+            this._logger.LogInformation($"Part One: {this.SolvePartOneAsync(startingPopulation)}");
+            this._logger.LogInformation($"Part Two: {this.SolvePartTwoAsync(startingPopulation)}");
 
             return 0;
         }
 
-        private string SolvePartOneAsync(List<int> input)
+        private string SolvePartOneAsync(Dictionary<int, long> input)
         {
-            var fish = input;
-            for(var i = 0; i < 80; i++)
-            {
-                var tempFish = new List<int>(fish);
-                fish.Clear();
-                fish.AddRange(tempFish.Select(f => 
-                {
-                    if(--f < 0)
-                    {
-                        f = 6;
-                        fish.Add(8);
-                    }
-
-                    return f;
-                }).ToList());
-            }
-
-           return $"{fish.Count} fish";
+            return this.CalculatePopulationAfterDays(80, input);
         }
 
-        private string SolvePartTwoAsync(List<int> input)
+        private string CalculatePopulationAfterDays(int days, Dictionary<int, long> startingPopulation)
         {
-            return "unsolved";
+            this._logger.LogInformation($"Calculating population after {days} days. Starting population is {startingPopulation.Count} fish.");
+
+            var population = new Dictionary<int, long>(startingPopulation);
+
+            for(var i = 0; i < days; i++)
+            {
+                population = this.AdvanceDay(population);
+            }
+            
+           return $"{population.Values.Sum()} fish";
+        }
+
+        private Dictionary<int, long> AdvanceDay(Dictionary<int, long> population)
+        {
+            return new Dictionary<int, long>
+            {
+                {0, population[1]},
+                {1, population[2]},
+                {2, population[3]},
+                {3, population[4]},
+                {4, population[5]},
+                {5, population[6]},
+                {6, population[0] + population[7]},
+                {7, population[8]},
+                {8, population[0]},
+            };
+        }
+
+        private string SolvePartTwoAsync(Dictionary<int, long> input)
+        {
+            return this.CalculatePopulationAfterDays(256, input);
         }
 
         public override CommandLineApplication Configure(CommandLineApplication commandLineApplication)
